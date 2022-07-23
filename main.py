@@ -43,7 +43,7 @@ def GetPrefix(client, message):
 
 client = commands.Bot(
 	command_prefix=GetPrefix,
-	# intents = discord.Intents(members=True), 
+	intents = discord.Intents(members=True), 
 	strip_after_prefix=True
 	)
 
@@ -142,7 +142,7 @@ async def ChangePrefix(ctx, prefix):
 	with open("prefixes.json", 'w') as f:
 		json.dump(prefixes, f, indent=4)
 
-	await ctx.send(f"Prefix changed to: {prefix}")
+	await ctx.send(f"Prefix changed to: `{prefix}`.")
 	name = f"Prefix: {prefix}"
 
 @client.command(aliases=["exit"])
