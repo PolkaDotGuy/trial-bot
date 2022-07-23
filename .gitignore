@@ -1,0 +1,6 @@
+*.env
+*/.config
+*/venv
+*/__pycache__
+.replit
+.nix
