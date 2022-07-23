@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 from decouple import config
 # from keep_alive import keep_alive
 # from pathlib import Path
+import afk
 
 
 def GetPrefix(client, message):
@@ -43,8 +44,13 @@ def GetPrefix(client, message):
 client = commands.Bot(
 	command_prefix=GetPrefix,
 	# intents = discord.Intents(members=True), 
-	strip_after_prefix=True, # Allows for spaces after prefix
+	strip_after_prefix=True
 	)
+
+'''Setup cogs'''
+cogs = [afk]
+for cog in cogs:
+	cog.setup(client)
 
 
 # Events
@@ -136,7 +142,7 @@ async def ChangePrefix(ctx, prefix):
 	with open("prefixes.json", 'w') as f:
 		json.dump(prefixes, f, indent=4)
 
-	await ctx.send(f"Prefix changed to: `{prefix}`.")
+	await ctx.send(f"Prefix changed to: {prefix}")
 	name = f"Prefix: {prefix}"
 
 @client.command(aliases=["exit"])
