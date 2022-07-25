@@ -40,10 +40,12 @@ def GetPrefix(client, message):
 		guild_prefix = prefixes[str(message.guild.id)]
 	return guild_prefix
 
-
+intents = discord.Intents.default()
+intents.members = True
+intents.presences = True
 client = commands.Bot(
 	command_prefix=GetPrefix,
-	intents = discord.Intents(members=True), 
+	intents = intents, 
 	strip_after_prefix=True
 	)
 
@@ -62,6 +64,8 @@ async def on_guild_join(guild):
 	Adds default guild prefix ("t ") to prefixes.json when bot joins server
 	'''
 	
+	print(f"Joined {guild.name}!")
+
 	with open("prefixes.json", 'r') as f:
 		prefixes = json.load(f)
 
