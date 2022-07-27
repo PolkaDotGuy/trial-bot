@@ -19,6 +19,7 @@ from decouple import config
 # from keep_alive import keep_alive
 # from pathlib import Path
 import afk
+from functions import GetCurrentTime
 
 
 def GetPrefix(client, message):
@@ -40,9 +41,8 @@ def GetPrefix(client, message):
 		guild_prefix = prefixes[str(message.guild.id)]
 	return guild_prefix
 
-intents = discord.Intents.default()
-intents.members = True
-intents.presences = True
+intents = discord.Intents.all()
+# intents.members = True
 client = commands.Bot(
 	command_prefix=GetPrefix,
 	intents = intents, 
@@ -64,7 +64,8 @@ async def on_guild_join(guild):
 	Adds default guild prefix ("t ") to prefixes.json when bot joins server
 	'''
 	
-	print(f"Joined {guild.name}!")
+	current_time = GetCurrentTime("Asia/Hong_Kong") + "HKT"
+	print(f"Joined {guild.name} at {current_time}!")
 
 	with open("prefixes.json", 'r') as f:
 		prefixes = json.load(f)
@@ -107,6 +108,22 @@ async def on_ready():
 	print(f'Logged in as {client.user} (ID: {client.user.id})\n------')
 	client.loop.create_task(presence())
 
+	'''Checks for new servers'''
+	with open("prefixes.json", 'r') as f:
+		prefixes = json.load(f)
+
+
+	new_guilds = []
+	async for guild in client.fetch_guilds():
+		if (guild.id not in prefixes.keys()):
+			prefixes[str(guild.id)] = "t "
+			new_guilds.append(guild.name)
+
+	print(f"Joined: {', '.join(new_guilds)}!")
+
+	with open("prefixes.json", 'w') as f:
+		json.dump(prefixes, f, indent=4)
+
 @client.event
 async def presence():
 	'''Cycles between presences.'''
@@ -122,11 +139,13 @@ async def presence():
 		await asyncio.sleep(10)
 
 
+
 # Commands
 @client.command(name="Ping", aliases=["ping", 'p'])
 async def Ping(ctx):
 	'''Ping command'''
 	await ctx.reply(f"Pong! In {round(client.latency * 1000)}ms")
+
 
 @client.command(name="ChangePrefix", aliases=["changeprefix", "prefix"])
 @commands.has_permissions(administrator=True)
@@ -149,12 +168,14 @@ async def ChangePrefix(ctx, prefix):
 	await ctx.send(f"Prefix changed to: `{prefix}`.")
 	name = f"Prefix: {prefix}"
 
+
 @client.command(aliases=["exit"])
 @commands.is_owner()
 async def Exit(ctx):
 	'''Exit command'''
 	await ctx.send("Goodbye...")
 	exit()
+
 
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
