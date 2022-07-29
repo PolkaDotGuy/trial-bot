@@ -19,6 +19,7 @@ from decouple import config
 # from keep_alive import keep_alive
 # from pathlib import Path
 import afk
+import music
 from functions import GetCurrentTime
 
 
@@ -50,7 +51,7 @@ client = commands.Bot(
 	)
 
 '''Setup cogs'''
-cogs = [afk]
+cogs = [afk, music]
 for cog in cogs:
 	cog.setup(client)
 

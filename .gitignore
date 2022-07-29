@@ -5,3 +5,5 @@
 .replit
 .nix
 prefixes.json
+Procfile
+requirements.txt
